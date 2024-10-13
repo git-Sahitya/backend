@@ -1,0 +1,9 @@
+{
+    "search.useGlobalIgnoreFiles": false,
+    "git.decorations.enabled": true,
+    "git.enabled": true,
+    "search.useParentIgnoreFiles": false,
+    "explorer.excludeGitIgnore": false,
+    "git.ignoreMissingGitWarning": false,
+    "git.ignoreLegacyWarning": false
+}
