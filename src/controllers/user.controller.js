@@ -14,10 +14,10 @@ const registerUser = asyncHandler(async (req, res) => {
   // remove password and refresh token feild from response
   // return res
 
-  const { username, fullname, email, password } = req.body;
-  console.log("email: ", email);
+  const { username,fullName, email, password } = req.body;
+  //console.log("email: ", email);
 
-  // this step is to check valtdation one by one username , fullname , email, password
+  // this step is to check valtdation one by one username ,fullName , email, password
 
   /*
   if (fullname ==="") {
@@ -28,7 +28,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // we can check validation in one single steps !!!
 
   if (
-    [username, fullname, email, password].some((feild) => feild?.trim() === "")
+    [username,fullName, email, password].some((feild) => feild?.trim() === "")
   ) {
     throw new ApiError(400, "All fields are required");
   }
@@ -39,29 +39,39 @@ const registerUser = asyncHandler(async (req, res) => {
   if (existedUser) {
     throw new ApiError(409, "User with email or username alredt exists");
   }
-
+   // console.log(req.files);
+    
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+ // const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
+   let coverImageLocalPath;
+   if (req.files && Array.isArray(req.files.coverImage) &&  req.files.coverImage.length > 0) {
+    coverImageLocalPath = req.files.coverImage[0].path
+   }
   // throw a error if avatarlocalpath nbot available
+
+
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is required.");
   }
+
   // Now upload on cloudinary
-  const avarat = await uploadOnCloudinary(avatarLocalPath);
+
+
+  const avatar = await uploadOnCloudinary(avatarLocalPath);
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
   // check avatar goes are not if not then throw a error
 
-  if (!avarat) {
+  if (!avatar) {
     throw new ApiError(400, "Avatar file is required.");
   }
 
   // create a object and enter in db
 
   const user = await User.create({
-    fullname,
-    avarat: avarat.url,
+   fullName,
+    avatar: avatar.url,
     coverImage: coverImage?.url || "",
     email,
     password,
